@@ -1,0 +1,30 @@
+context:
+  distro: jazzy
+  pkg: ament_index_python
+  group: ament_index
+package:
+  name: ros-jazzy-ament_index_python
+  version: 1.8.1
+source:
+  git: https://github.com/ros2-gbp/ament_index-release
+  rev: release/jazzy/ament_index_python/1.8.1-1
+build:
+  noarch: python
+  script:
+  - '[ -f $RECIPE_DIR/package.xml ] && cp -f $RECIPE_DIR/package.xml .'
+  - python -m pip install . -vv --no-deps --no-build-isolation
+  number: 1
+requirements:
+  host:
+  - pip
+  run:
+  - python
+tests:
+- package_contents:
+    files:
+    - share/ament_index_python/package.xml
+about:
+  homepage: https://www.ros.org/
+  license: BSD-3-Clause
+  summary: Robot Operating System
+  description: Python API to access the ament resource index.

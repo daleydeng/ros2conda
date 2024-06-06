@@ -1,0 +1,3 @@
+buildtool: []
+build:
+- gtest_vendor

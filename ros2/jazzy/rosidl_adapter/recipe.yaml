@@ -1,0 +1,53 @@
+context:
+  distro: jazzy
+  pkg: rosidl_adapter
+  group: rosidl
+package:
+  name: ros-jazzy-rosidl_adapter
+  version: 4.6.1
+source:
+  git: https://github.com/ros2-gbp/rosidl-release
+  rev: release/jazzy/rosidl_adapter/4.6.1-1
+build:
+  script:
+  - '[ -f $RECIPE_DIR/package.xml ] && cp -f $RECIPE_DIR/package.xml .'
+  - mkdir build && cd build
+  - export CFLAGS=
+  - export CXXFLAGS=
+  - cmake .. -DCMAKE_GENERATOR=Ninja                 -DCMAKE_PREFIX_PATH=$PREFIX                 -DCMAKE_INSTALL_PREFIX=$PREFIX                 -DBUILD_TESTING=OFF                 &&
+    ninja install
+  number: 1
+  noarch: python
+requirements:
+  build:
+  - cmake
+  - ninja
+  - ros-jazzy-ament_cmake
+  - ros-jazzy-ament_cmake_core
+  - ros-jazzy-ament_cmake_export_dependencies
+  - ros-jazzy-ament_cmake_export_definitions
+  - ros-jazzy-ament_cmake_export_include_directories
+  - ros-jazzy-ament_cmake_export_interfaces
+  - ros-jazzy-ament_cmake_export_libraries
+  - ros-jazzy-ament_cmake_export_link_flags
+  - ros-jazzy-ament_cmake_export_targets
+  - ros-jazzy-ament_cmake_gen_version_h
+  - ros-jazzy-ament_cmake_libraries
+  - ros-jazzy-ament_cmake_python
+  - ros-jazzy-ament_cmake_target_dependencies
+  - ros-jazzy-ament_cmake_test
+  - ros-jazzy-ament_cmake_version
+  - ros-jazzy-ament_cmake_include_directories
+  run:
+  - empy
+  - ros-jazzy-rosidl_cli
+tests:
+- package_contents:
+    files:
+    - share/rosidl_adapter/package.xml
+about:
+  homepage: https://www.ros.org/
+  license: BSD-3-Clause
+  summary: Robot Operating System
+  description: API and scripts to parse .msg/.srv/.action files and convert them to
+    .idl.

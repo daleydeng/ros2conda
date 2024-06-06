@@ -1,0 +1,41 @@
+context:
+  distro: jazzy
+  pkg: ament_cmake_core
+  group: ament_cmake
+package:
+  name: ros-jazzy-ament_cmake_core
+  version: 2.5.0
+source:
+  git: https://github.com/ros2-gbp/ament_cmake-release
+  rev: release/jazzy/ament_cmake_core/2.5.0-2
+build:
+  script:
+  - '[ -f $RECIPE_DIR/package.xml ] && cp -f $RECIPE_DIR/package.xml .'
+  - mkdir build && cd build
+  - export CFLAGS=
+  - export CXXFLAGS=
+  - cmake .. -DCMAKE_GENERATOR=Ninja                 -DCMAKE_PREFIX_PATH=$PREFIX                 -DCMAKE_INSTALL_PREFIX=$PREFIX                 -DBUILD_TESTING=OFF                 &&
+    ninja install
+  number: 1
+requirements:
+  build:
+  - cmake
+  - ninja
+  host:
+  - ros-jazzy-ament_package
+  - catkin_pkg
+  - pip
+tests:
+- package_contents:
+    files:
+    - share/ament_cmake_core/package.xml
+about:
+  homepage: https://www.ros.org/
+  license: BSD-3-Clause
+  summary: Robot Operating System
+  description: "The core of the ament buildsystem in CMake.\n\n    Several subcomponents\
+    \ provide specific funtionalities:\n    * environment: provide prefix-level setup\
+    \ files\n    * environment_hooks: provide package-level setup files and environment\
+    \ hooks\n    * index: store information in an index and retrieve them without\
+    \ crawling\n    * package_templates: templates from the ament_package Python package\n\
+    \    * symlink_install: use symlinks for CMake install commands"

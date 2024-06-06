@@ -1,0 +1,30 @@
+context:
+  distro: jazzy
+  pkg: domain_coordinator
+  group: ament_cmake_ros
+package:
+  name: ros-jazzy-domain_coordinator
+  version: 0.12.0
+source:
+  git: https://github.com/ros2-gbp/ament_cmake_ros-release
+  rev: release/jazzy/domain_coordinator/0.12.0-3
+build:
+  noarch: python
+  script:
+  - '[ -f $RECIPE_DIR/package.xml ] && cp -f $RECIPE_DIR/package.xml .'
+  - python -m pip install . -vv --no-deps --no-build-isolation
+  number: 1
+requirements:
+  host:
+  - pip
+  run:
+  - python
+tests:
+- package_contents:
+    files:
+    - share/domain_coordinator/package.xml
+about:
+  homepage: https://www.ros.org/
+  license: BSD-3-Clause
+  summary: Robot Operating System
+  description: A tool to coordinate unique ROS_DOMAIN_IDs across multiple processes

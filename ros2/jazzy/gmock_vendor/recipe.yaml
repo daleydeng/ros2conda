@@ -1,0 +1,32 @@
+context:
+  distro: jazzy
+  pkg: gmock_vendor
+  group: googletest
+package:
+  name: ros-jazzy-gmock_vendor
+  version: 1.14.9000
+source:
+  git: https://github.com/ros2-gbp/googletest-release
+  rev: release/jazzy/gmock_vendor/1.14.9000-2
+build:
+  script:
+  - '[ -f $RECIPE_DIR/package.xml ] && cp -f $RECIPE_DIR/package.xml .'
+  - mkdir build && cd build
+  - export CFLAGS=
+  - export CXXFLAGS=
+  - cmake .. -DCMAKE_GENERATOR=Ninja                 -DCMAKE_PREFIX_PATH=$PREFIX                 -DCMAKE_INSTALL_PREFIX=$PREFIX                 -DBUILD_TESTING=OFF                 &&
+    ninja install
+  number: 1
+requirements:
+  build:
+  - cmake
+  - ninja
+tests:
+- package_contents:
+    files:
+    - share/gmock_vendor/package.xml
+about:
+  homepage: https://www.ros.org/
+  license: BSD-3-Clause
+  summary: Robot Operating System
+  description: The package provides GoogleMock.

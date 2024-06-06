@@ -1,0 +1,55 @@
+context:
+  distro: jazzy
+  pkg: ament_index_cpp
+  group: ament_index
+package:
+  name: ros-jazzy-ament_index_cpp
+  version: 1.8.0
+source:
+  git: https://github.com/ros2-gbp/ament_index-release
+  rev: release/jazzy/ament_index_cpp/1.8.0-2
+build:
+  script:
+  - '[ -f $RECIPE_DIR/package.xml ] && cp -f $RECIPE_DIR/package.xml .'
+  - mkdir build && cd build
+  - export CFLAGS=
+  - export CXXFLAGS=
+  - cmake .. -DCMAKE_GENERATOR=Ninja                 -DCMAKE_PREFIX_PATH=$PREFIX                 -DCMAKE_INSTALL_PREFIX=$PREFIX                 -DBUILD_TESTING=OFF                 &&
+    ninja install
+  number: 1
+requirements:
+  build:
+  - cmake
+  - ninja
+  - ros-jazzy-ament_cmake
+  - ${{ compiler("cxx") }}
+  - ros-jazzy-ament_cmake_core
+  - ros-jazzy-ament_cmake_export_dependencies
+  - ros-jazzy-ament_cmake_export_definitions
+  - ros-jazzy-ament_cmake_export_include_directories
+  - ros-jazzy-ament_cmake_export_interfaces
+  - ros-jazzy-ament_cmake_export_libraries
+  - ros-jazzy-ament_cmake_export_link_flags
+  - ros-jazzy-ament_cmake_export_targets
+  - ros-jazzy-ament_cmake_gen_version_h
+  - ros-jazzy-ament_cmake_libraries
+  - ros-jazzy-ament_cmake_python
+  - ros-jazzy-ament_cmake_target_dependencies
+  - ros-jazzy-ament_cmake_test
+  - ros-jazzy-ament_cmake_version
+  - ros-jazzy-ament_cmake_include_directories
+  host:
+  - ros-jazzy-ament_cmake
+  - ros-jazzy-ament_cmake_core
+  - ros-jazzy-ament_package
+  - catkin_pkg
+  - pip
+tests:
+- package_contents:
+    files:
+    - share/ament_index_cpp/package.xml
+about:
+  homepage: https://www.ros.org/
+  license: BSD-3-Clause
+  summary: Robot Operating System
+  description: C++ API to access the ament resource index.

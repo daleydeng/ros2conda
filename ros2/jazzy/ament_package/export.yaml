@@ -1,0 +1,3 @@
+buildtool: []
+build:
+- python3-setuptools

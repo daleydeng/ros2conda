@@ -1,0 +1,37 @@
+context:
+  distro: jazzy
+  pkg: ament_cmake_gen_version_h
+  group: ament_cmake
+package:
+  name: ros-jazzy-ament_cmake_gen_version_h
+  version: 2.5.0
+source:
+  git: https://github.com/ros2-gbp/ament_cmake-release
+  rev: release/jazzy/ament_cmake_gen_version_h/2.5.0-2
+build:
+  script:
+  - '[ -f $RECIPE_DIR/package.xml ] && cp -f $RECIPE_DIR/package.xml .'
+  - mkdir build && cd build
+  - export CFLAGS=
+  - export CXXFLAGS=
+  - cmake .. -DCMAKE_GENERATOR=Ninja                 -DCMAKE_PREFIX_PATH=$PREFIX                 -DCMAKE_INSTALL_PREFIX=$PREFIX                 -DBUILD_TESTING=OFF                 &&
+    ninja install
+  number: 1
+requirements:
+  build:
+  - cmake
+  - ninja
+  - ros-jazzy-ament_cmake_core
+  - ${{ compiler("cxx") }}
+  host:
+  - ros-jazzy-ament_package
+  - pip
+tests:
+- package_contents:
+    files:
+    - share/ament_cmake_gen_version_h/package.xml
+about:
+  homepage: https://www.ros.org/
+  license: BSD-3-Clause
+  summary: Robot Operating System
+  description: Generate a C header containing the version number of the package

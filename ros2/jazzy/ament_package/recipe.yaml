@@ -1,0 +1,30 @@
+context:
+  distro: jazzy
+  pkg: ament_package
+  group: ament_package
+package:
+  name: ros-jazzy-ament_package
+  version: 0.16.3
+source:
+  git: https://github.com/ros2-gbp/ament_package-release
+  rev: release/jazzy/ament_package/0.16.3-3
+build:
+  noarch: python
+  script:
+  - '[ -f $RECIPE_DIR/package.xml ] && cp -f $RECIPE_DIR/package.xml .'
+  - python -m pip install . -vv --no-deps --no-build-isolation
+  number: 1
+requirements:
+  host:
+  - pip
+  run:
+  - python
+tests:
+- package_contents:
+    files:
+    - share/ament_package/package.xml
+about:
+  homepage: https://www.ros.org/
+  license: BSD-3-Clause
+  summary: Robot Operating System
+  description: The parser for the manifest files in the ament buildsystem.

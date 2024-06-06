@@ -1,0 +1,2 @@
+buildtool_depends = ["${compiler:cxx}"]
+build.script = "build.sh"
