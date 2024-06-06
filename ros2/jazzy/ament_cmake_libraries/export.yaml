@@ -1,3 +1,3 @@
-buildtool:
+buildtool: []
+build:
 - ament_cmake_core
-build: []

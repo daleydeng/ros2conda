@@ -1,5 +1,5 @@
-buildtool:
-- ament_cmake_export_dependencies
+buildtool: []
+build:
 - ament_cmake_core
-- python3-vcstool
-build: []
+- ament_cmake_export_dependencies
+- python3-vcs

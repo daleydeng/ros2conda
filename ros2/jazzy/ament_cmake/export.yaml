@@ -1,4 +1,5 @@
-buildtool:
+buildtool: []
+build:
 - ament_cmake_core
 - ament_cmake_export_dependencies
 - ament_cmake_export_definitions
@@ -13,5 +14,3 @@ buildtool:
 - ament_cmake_target_dependencies
 - ament_cmake_test
 - ament_cmake_version
-build:
-- ament_cmake_core

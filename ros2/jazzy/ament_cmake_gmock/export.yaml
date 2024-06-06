@@ -1,6 +1,5 @@
-buildtool:
-- ament_cmake_gtest
+buildtool: []
+build:
 - ament_cmake_test
 - gmock_vendor
 - google-mock
-build: []

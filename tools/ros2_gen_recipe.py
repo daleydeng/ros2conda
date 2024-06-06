@@ -232,7 +232,8 @@ def main(distro, repo_type, build_num, dry_run, src):
     if osp.exists(p := osp.join(src, 'package.xml')):
         pkg_info = load_xml(p)['package']
         repo_pkg_info = load_xml(repo_pkg_xml_f)['package']
-        assert pkg_info['name'] == repo_pkg_info['name'] and pkg_info['version'] == repo_pkg_info['version'], f"{pkg_info} != {repo_pkg_info}"
+        assert pkg_info['name'] == repo_pkg_info['name'] and pkg_info['version'] == repo_pkg_info['version'], \
+            f"({pkg_info["name"]}, {pkg_info["version"]}) != ({repo_pkg_info["name"]}, {repo_pkg_info["version"]})"
         pkg_xml_f = p
 
     ros2_pkg = OmegaConf.create(load_xml(pkg_xml_f)).package
@@ -276,6 +277,7 @@ def main(distro, repo_type, build_num, dry_run, src):
         'rev': git_rev,
     })
     OmegaConf.update(recipe, 'build', cfg.build) # for dict deep merge
+    OmegaConf.update(recipe, 'requirements', cfg.requirements)
     recipe.about.update({
         # 'license': ros2_pkg.license,
         'description': ros2_pkg.description,

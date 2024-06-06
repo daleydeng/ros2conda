@@ -1,4 +1,4 @@
-buildtool:
-- ament_cmake
+buildtool: []
 build:
+- ament_cmake
 - python3-empy

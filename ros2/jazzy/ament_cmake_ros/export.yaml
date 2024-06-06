@@ -1,7 +1,7 @@
 buildtool:
-- ament_cmake
-- ament_cmake_gtest
-- ament_cmake_gmock
-- ament_cmake_pytest
 - domain_coordinator
-build: []
+build:
+- ament_cmake
+- ament_cmake_gmock
+- ament_cmake_gtest
+- ament_cmake_pytest

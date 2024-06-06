@@ -1,7 +1,5 @@
 buildtool:
 - cmake
-- ament_package
-- python3-catkin-pkg-modules
 build:
 - ament_package
 - python3-catkin-pkg-modules

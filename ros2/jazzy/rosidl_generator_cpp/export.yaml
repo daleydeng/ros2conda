@@ -1,0 +1,8 @@
+buildtool:
+- ament_cmake_core
+- python3
+- rosidl_pycommon
+build:
+- rosidl_cmake
+- rosidl_generator_c
+- rosidl_runtime_cpp

@@ -21,10 +21,11 @@ requirements:
   build:
   - cmake
   - ninja
-  - ros-jazzy-ament_cmake_core
   - ${{ compiler("cxx") }}
   host:
+  - ros-jazzy-ament_cmake_core
   - ros-jazzy-ament_package
+  - catkin_pkg
   - pip
 tests:
 - package_contents:

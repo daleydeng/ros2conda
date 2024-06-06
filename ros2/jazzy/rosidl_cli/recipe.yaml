@@ -10,7 +10,9 @@ source:
   rev: release/jazzy/rosidl_cli/4.6.0-2
 build:
   noarch: python
-  script: python -m pip install . -vv --no-deps --no-build-isolation
+  script:
+  - '[ -f $RECIPE_DIR/package.xml ] && cp -f $RECIPE_DIR/package.xml .'
+  - python -m pip install . -vv --no-deps --no-build-isolation
   number: 1
 requirements:
   host:

@@ -1,8 +1,8 @@
-buildtool:
+buildtool: []
+build:
 - ament_cmake_core
 - python3
 - rosidl_pycommon
-build:
 - rosidl_cmake
 - rosidl_generator_type_description
 - rosidl_typesupport_interface
