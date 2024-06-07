@@ -22,7 +22,6 @@
   <author email="michel@ekumenlabs.com">Michel Hidalgo</author>
 
   <buildtool_depend>cmake</buildtool_depend>
-  <buildtool_export_depend>cmake</buildtool_export_depend>
 
   <build_depend>ament_package</build_depend>
   <build_export_depend>ament_package</build_export_depend>

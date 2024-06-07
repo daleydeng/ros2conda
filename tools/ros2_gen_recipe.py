@@ -288,10 +288,10 @@ def main(distro, repo_type, build_num, dry_run, src):
     print (recipe_str)
 
     print ("exporting ...")
-    buildtool_export_depends = ros2_get_array(ros2_pkg, 'buildtool_export_depend') + depends
+    buildtool_export_depends = ros2_get_array(ros2_pkg, 'buildtool_export_depend')
     buildtool_export_depends = add_dict_to_array(buildtool_export_depends, cfg, 'buildtool_export_depends')
 
-    build_export_depends = ros2_get_array(ros2_pkg, 'build_export_depend')
+    build_export_depends = ros2_get_array(ros2_pkg, 'build_export_depend') + depends
     build_export_depends = add_dict_to_array(build_export_depends, cfg, 'build_export_depends')
 
     export = {
