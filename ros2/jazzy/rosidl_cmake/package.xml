@@ -16,8 +16,8 @@
   <author email="dthomas@osrfoundation.org">Dirk Thomas</author>
   <author email="michel@ekumenlabs.com">Michel Hidalgo</author>
 
-  <build_depend>ament_cmake</build_depend>
-  <build_depend>ament_cmake_python</build_depend>
+  <build_depend>ament_cmake-devel</build_depend>
+  <build_depend>ament_cmake_python-devel</build_depend>
 
   <!-- Forwarding Python module -->
   <exec_depend>rosidl_pycommon</exec_depend>

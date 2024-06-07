@@ -17,7 +17,7 @@
   <author email="michel@ekumenlabs.com">Michel Hidalgo</author>
   <author email="william@osrfoundation.org">William Woodall</author>
 
-  <build_depend>ament_cmake_python</build_depend>
+  <build_depend>ament_cmake_python-devel</build_depend>
   <build_depend>ament_cmake_ros</build_depend>
 
   <!-- <build_export_depend>ament_cmake_core</build_export_depend>

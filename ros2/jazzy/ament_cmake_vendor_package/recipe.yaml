@@ -23,9 +23,6 @@ outputs:
     host:
     - ros-jazzy-ament_cmake_core-devel
     - ros-jazzy-ament_cmake_export_dependencies-devel
-    - ros-jazzy-ament_package
-    - catkin_pkg
-    - ros-jazzy-ament_cmake_libraries-devel
   tests:
   - package_contents:
       files:

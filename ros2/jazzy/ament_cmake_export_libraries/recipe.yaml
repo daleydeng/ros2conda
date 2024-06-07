@@ -21,9 +21,7 @@ outputs:
     number: 1
   requirements:
     host:
-    - ros-jazzy-ament_cmake_core
-    - ros-jazzy-ament_package
-    - catkin_pkg
+    - ros-jazzy-ament_cmake_core-devel
   tests:
   - package_contents:
       files:
@@ -35,7 +33,7 @@ outputs:
   requirements:
     run:
     - ros-jazzy-ament_cmake_export_libraries
-    - ros-jazzy-ament_cmake_core
+    - ros-jazzy-ament_cmake_core-devel
 about:
   homepage: https://www.ros.org/
   license: BSD-3-Clause

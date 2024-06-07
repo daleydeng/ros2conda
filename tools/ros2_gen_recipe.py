@@ -206,8 +206,9 @@ def ros2_grab_export_depends(seeds, key, distro_dir):
     queue = [i for i in seeds if is_ros2_pkg(i, distro_dir)]
     new_seeds = []
     for i in queue:
-        ros2_pkg_name = get_ros2_pkg_name(i)
-        export_f = osp.join(distro_dir, ros2_pkg_name, 'export.yaml')
+        if i.endswith('-devel'):
+            continue
+        export_f = osp.join(distro_dir, i, 'export.yaml')
         assert osp.exists(export_f), f"{export_f} not exists"
         new_seeds += OmegaConf.load(export_f)[key]
 

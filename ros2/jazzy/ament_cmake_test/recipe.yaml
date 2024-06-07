@@ -23,8 +23,6 @@ outputs:
     host:
     - ros-jazzy-ament_cmake_core-devel
     - ros-jazzy-ament_cmake_python-devel
-    - ros-jazzy-ament_package
-    - catkin_pkg
   tests:
   - package_contents:
       files:

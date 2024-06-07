@@ -1,2 +1,2 @@
 build:
-- ament_cmake_core
+- ament_cmake_core-devel

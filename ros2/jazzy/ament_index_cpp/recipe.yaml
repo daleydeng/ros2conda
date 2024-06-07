@@ -24,24 +24,6 @@ requirements:
   - ${{ compiler("cxx") }}
   host:
   - ros-jazzy-ament_cmake-devel
-  - ros-jazzy-ament_cmake_core-devel
-  - ros-jazzy-ament_cmake_export_dependencies-devel
-  - ros-jazzy-ament_cmake_export_definitions-devel
-  - ros-jazzy-ament_cmake_export_include_directories-devel
-  - ros-jazzy-ament_cmake_export_interfaces-devel
-  - ros-jazzy-ament_cmake_export_libraries-devel
-  - ros-jazzy-ament_cmake_export_link_flags-devel
-  - ros-jazzy-ament_cmake_export_targets-devel
-  - ros-jazzy-ament_cmake_gen_version_h-devel
-  - ros-jazzy-ament_cmake_libraries-devel
-  - ros-jazzy-ament_cmake_python-devel
-  - ros-jazzy-ament_cmake_target_dependencies-devel
-  - ros-jazzy-ament_cmake_test-devel
-  - ros-jazzy-ament_cmake_version-devel
-  - ros-jazzy-ament_package
-  - catkin_pkg
-  - ros-jazzy-ament_cmake_core
-  - ros-jazzy-ament_cmake_include_directories-devel
 tests:
 - package_contents:
     files:
