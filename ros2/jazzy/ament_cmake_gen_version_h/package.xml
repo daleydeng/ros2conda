@@ -12,8 +12,8 @@
   <author email="michel@ekumenlabs.com">Michel Hidalgo</author>
   <author>Serge Nikulin</author>
 
-  <build_depend>ament_cmake_core</build_depend>
-  <build_export_depend>ament_cmake_core</build_export_depend>
+  <build_depend>ament_cmake_core-devel</build_depend>
+  <build_export_depend>ament_cmake_core-devel</build_export_depend>
 
   <build_depend>ament_package</build_depend>
 

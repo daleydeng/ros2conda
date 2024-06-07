@@ -1,5 +1,7 @@
 #!/usr/bin/env python
+import os
 import os.path as osp
+from pathlib import Path
 import toml
 from orderedset  import OrderedSet
 from omegaconf import OmegaConf
@@ -55,6 +57,18 @@ RECIPE_TPL_PYTHON = {
     "about": deepcopy(RECIPE_ABOUT)
 }
 
+BUILD_SCRIPT_CMAKE = [
+    "[ -f $RECIPE_DIR/package.xml ] && cp -f $RECIPE_DIR/package.xml .",
+    "mkdir build && cd build",
+    "export CFLAGS=",
+    "export CXXFLAGS=",
+    "cmake .. -DCMAKE_GENERATOR=Ninja \
+        -DCMAKE_PREFIX_PATH=$PREFIX \
+        -DCMAKE_INSTALL_PREFIX=$PREFIX \
+        -DBUILD_TESTING=OFF \
+        && ninja install"
+]
+
 RECIPE_TPL_CMAKE = {
     "context": {
         "distro": "???",
@@ -68,17 +82,7 @@ RECIPE_TPL_CMAKE = {
     "source": {},
     "build": {
         # conda default CFLAGS, CXXFLAGS is bad, so clear it ,using cmake to auto find it instead
-        "script": [
-            "[ -f $RECIPE_DIR/package.xml ] && cp -f $RECIPE_DIR/package.xml .",
-            "mkdir build && cd build",
-            "export CFLAGS=",
-            "export CXXFLAGS=",
-            "cmake .. -DCMAKE_GENERATOR=Ninja \
-                -DCMAKE_PREFIX_PATH=$PREFIX \
-                -DCMAKE_INSTALL_PREFIX=$PREFIX \
-                -DBUILD_TESTING=OFF \
-                && ninja install"
-        ] ,
+        "script":  BUILD_SCRIPT_CMAKE,
     },
 
     "requirements": {
@@ -96,6 +100,55 @@ RECIPE_TPL_CMAKE = {
     "about": deepcopy(RECIPE_ABOUT)
 }
 
+RECIPE_TPL_CMAKE_META = {
+    "context": {
+        "distro": "???",
+        "pkg": "???",
+        "group": "???",
+    },
+    "recipe": {
+        "version": '???',
+    },
+
+    "outputs": [
+        {
+            "package": {
+                "name": "ros-${context.distro}-${context.pkg}",
+            },
+            "source": {},
+            "build": {
+                # conda default CFLAGS, CXXFLAGS is bad, so clear it ,using cmake to auto find it instead
+                "script": BUILD_SCRIPT_CMAKE,
+            },
+            "requirements": {},
+            "tests": [{
+                "package_contents": {
+                    "files": [
+                        "share/${context.pkg}/package.xml"
+                    ],
+                },
+            }],
+        },
+        {
+            "package": {
+                "name": "ros-${context.distro}-${context.pkg}-devel",
+            },
+            "build": {
+                "noarch": "generic",
+            },
+            "requirements": {
+                "run": [
+                    "ros-${context.distro}-${context.pkg}"
+                ]
+                # "run": [
+                #     '\${{ pin_subpackage("ros-${context.distro}-${context.pkg}", max_pin="x.x") }}'
+                # ],
+            },
+        }
+    ],
+    "about": deepcopy(RECIPE_ABOUT),
+}
+
 def file_name(f):
     return osp.basename(f)
 
@@ -105,7 +158,13 @@ def load_xml(fname):
     s = ElementTree.tostring(d, encoding='utf-8', method='xml')
     return xmltodict.parse(s)
 
+def get_ros2_pkg_name(i):
+    if i.endswith('-devel'):
+        i = i[:-len('-devel')]
+    return i
+
 def is_ros2_pkg(i, distro_dir):
+    i = get_ros2_pkg_name(i)
     return osp.isdir(osp.join(distro_dir, i))
 
 def ros2_get_array(pkg, key):
@@ -147,8 +206,9 @@ def ros2_grab_export_depends(seeds, key, distro_dir):
     queue = [i for i in seeds if is_ros2_pkg(i, distro_dir)]
     new_seeds = []
     for i in queue:
-        export_f = osp.join(distro_dir, i, 'export.yaml')
-        assert osp.exists(export_f)
+        ros2_pkg_name = get_ros2_pkg_name(i)
+        export_f = osp.join(distro_dir, ros2_pkg_name, 'export.yaml')
+        assert osp.exists(export_f), f"{export_f} not exists"
         new_seeds += OmegaConf.load(export_f)[key]
 
     return ordered_unique(seeds.copy() + ros2_grab_export_depends(new_seeds, key, distro_dir))
@@ -182,10 +242,11 @@ def add_dict_to_array(a, dic, key):
 @click.command()
 @click.option('--distro', '-d', type=click.Choice(['humble', 'rolling', 'auto'], case_sensitive=False), default='auto')
 @click.option('--repo_type', '-r', type=click.Choice(['single', 'collection', 'gbp'], case_sensitive=False), default='gbp')
+@click.option('--pkg_mode', '-p', type=click.Choice(['metapackage', 'export_list']), default='metapackage')
 @click.option('--build_num', '-n', default=1)
 @click.option('--dry-run', '-t', default=False)
 @click.argument('src')
-def main(distro, repo_type, build_num, dry_run, src):
+def main(distro, repo_type, pkg_mode, build_num, dry_run, src):
     assert osp.isdir(src)
     src = src.rstrip('/')
     distro_dir = osp.dirname(src)
@@ -253,10 +314,25 @@ def main(distro, repo_type, build_num, dry_run, src):
 
     exec_depends = ros2_get_array(ros2_pkg, 'exec_depend') + depends
 
+    buildtool_export_depends = ros2_get_array(ros2_pkg, 'buildtool_export_depend')
+    buildtool_export_depends = add_dict_to_array(buildtool_export_depends, cfg, 'buildtool_export_depends')
+    assert not buildtool_export_depends, "buildtool_export_depends should be empty"
+
+    build_export_depends = ros2_get_array(ros2_pkg, 'build_export_depend') + depends
+    build_export_depends = add_dict_to_array(build_export_depends, cfg, 'build_export_depends')
+
+    use_meta = False
     if build_type == 'ament_python':
         recipe = OmegaConf.create(RECIPE_TPL_PYTHON)
     elif build_type in ('ament_cmake', 'cmake'):
-        recipe = OmegaConf.create(RECIPE_TPL_CMAKE)
+        if not build_export_depends and pkg_mode == 'metapackage':
+            pkg_mode = "export_list"
+
+        if pkg_mode == "export_list":
+            recipe = OmegaConf.create(RECIPE_TPL_CMAKE)
+        elif pkg_mode == 'metapackage':
+            recipe = OmegaConf.create(RECIPE_TPL_CMAKE_META)
+            use_meta = True
     else:
         raise
 
@@ -266,38 +342,62 @@ def main(distro, repo_type, build_num, dry_run, src):
         'group': cfg.group,
     })
 
-    req = recipe.requirements
-    add_array_to_dict(req, 'build', convert_ros2_pkgs(buildtool_depends, distro, distro_dir))
-    add_array_to_dict(req, 'host', convert_ros2_pkgs(build_depends, distro, distro_dir))
-    add_array_to_dict(req, 'run', convert_ros2_pkgs(exec_depends, distro, distro_dir))
-
-    recipe.package.version = ros2_pkg.version
-    recipe.source.update({
-        'git': git_url,
-        'rev': git_rev,
-    })
-    OmegaConf.update(recipe, 'build', cfg.build) # for dict deep merge
-    OmegaConf.update(recipe, 'requirements', cfg.requirements)
     recipe.about.update({
         # 'license': ros2_pkg.license,
         'description': ros2_pkg.description,
     })
 
-    recipe_str = OmegaConf.to_yaml(recipe, resolve=True)
+    use_meta_f = osp.join(src, 'use_meta')
+    if use_meta:
+        recipe.recipe.version = ros2_pkg.version
+        subpkg_recipe = recipe.outputs[0]
+        subpkg_recipe.source.update({
+            'git': git_url,
+            'rev': git_rev,
+        })
+        noarch_type = subpkg_recipe.build.get('noarch', '')
 
+        req = subpkg_recipe.requirements
+        add_array_to_dict(req, 'build', convert_ros2_pkgs(buildtool_depends, distro, distro_dir))
+        add_array_to_dict(req, 'host', convert_ros2_pkgs(build_depends, distro, distro_dir))
+        add_array_to_dict(req, 'run', convert_ros2_pkgs(exec_depends, distro, distro_dir))
+        OmegaConf.update(subpkg_recipe, 'build', cfg.build) # for dict deep merge
+        OmegaConf.update(subpkg_recipe, 'requirements', cfg.requirements)
+
+        recipe.outputs[1].requirements.run += convert_ros2_pkgs(build_export_depends, distro, distro_dir)
+        Path(use_meta_f).touch()
+
+    else:
+        recipe.package.version = ros2_pkg.version
+        recipe.source.update({
+            'git': git_url,
+            'rev': git_rev,
+        })
+        noarch_type = recipe.build.get('noarch', '')
+
+        req = recipe.requirements
+        add_array_to_dict(req, 'build', convert_ros2_pkgs(buildtool_depends, distro, distro_dir))
+        add_array_to_dict(req, 'host', convert_ros2_pkgs(build_depends, distro, distro_dir))
+        add_array_to_dict(req, 'run', convert_ros2_pkgs(exec_depends, distro, distro_dir))
+        OmegaConf.update(recipe, 'build', cfg.build) # for dict deep merge
+        OmegaConf.update(recipe, 'requirements', cfg.requirements)
+
+        if osp.exists(use_meta_f):
+            os.remove(use_meta_f)
+
+    recipe_str = OmegaConf.to_yaml(recipe, resolve=True)
     print (recipe_str)
 
-    print ("exporting ...")
-    buildtool_export_depends = ros2_get_array(ros2_pkg, 'buildtool_export_depend')
-    buildtool_export_depends = add_dict_to_array(buildtool_export_depends, cfg, 'buildtool_export_depends')
-
-    build_export_depends = ros2_get_array(ros2_pkg, 'build_export_depend') + depends
-    build_export_depends = add_dict_to_array(build_export_depends, cfg, 'build_export_depends')
-
     export = {
-        "buildtool": buildtool_export_depends,
         "build": build_export_depends,
     }
+
+    if noarch_type in ('python', 'generic'):
+        if export['build']:
+            print (f"WARNING: python package {pkg} export something to build!!!")
+            pprint (export)
+
+    print ("exporting ...")
     export_str = OmegaConf.to_yaml(export)
     print (export_str)
 

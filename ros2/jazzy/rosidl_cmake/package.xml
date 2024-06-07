@@ -17,11 +17,7 @@
   <author email="michel@ekumenlabs.com">Michel Hidalgo</author>
 
   <build_depend>ament_cmake</build_depend>
-  <build_export_depend>ament_cmake</build_export_depend>
-
   <build_depend>ament_cmake_python</build_depend>
-
-  <build_export_depend>python3-empy</build_export_depend>
 
   <!-- Forwarding Python module -->
   <exec_depend>rosidl_pycommon</exec_depend>

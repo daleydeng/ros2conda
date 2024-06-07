@@ -13,8 +13,6 @@
   <author email="dthomas@osrfoundation.org">Dirk Thomas</author>
   <author email="mabel@openrobotics.org">Mabel Zhang</author>
 
-  <build_export_depend>python3-setuptools</build_export_depend>
-
   <exec_depend>python3-importlib-metadata</exec_depend>
   <exec_depend>python3-importlib-resources</exec_depend>
 

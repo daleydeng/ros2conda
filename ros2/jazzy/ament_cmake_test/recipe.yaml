@@ -2,35 +2,41 @@ context:
   distro: jazzy
   pkg: ament_cmake_test
   group: ament_cmake
-package:
-  name: ros-jazzy-ament_cmake_test
+recipe:
   version: 2.5.0
-source:
-  git: https://github.com/ros2-gbp/ament_cmake-release
-  rev: release/jazzy/ament_cmake_test/2.5.0-2
-build:
-  script:
-  - '[ -f $RECIPE_DIR/package.xml ] && cp -f $RECIPE_DIR/package.xml .'
-  - mkdir build && cd build
-  - export CFLAGS=
-  - export CXXFLAGS=
-  - cmake .. -DCMAKE_GENERATOR=Ninja                 -DCMAKE_PREFIX_PATH=$PREFIX                 -DCMAKE_INSTALL_PREFIX=$PREFIX                 -DBUILD_TESTING=OFF                 &&
-    ninja install
-  number: 1
-requirements:
+outputs:
+- package:
+    name: ros-jazzy-ament_cmake_test
+  source:
+    git: https://github.com/ros2-gbp/ament_cmake-release
+    rev: release/jazzy/ament_cmake_test/2.5.0-2
   build:
-  - cmake
-  - ninja
-  host:
-  - ros-jazzy-ament_cmake_core
-  - ros-jazzy-ament_cmake_python
-  - ros-jazzy-ament_package
-  - catkin_pkg
-  - pip
-tests:
-- package_contents:
-    files:
-    - share/ament_cmake_test/package.xml
+    script:
+    - '[ -f $RECIPE_DIR/package.xml ] && cp -f $RECIPE_DIR/package.xml .'
+    - mkdir build && cd build
+    - export CFLAGS=
+    - export CXXFLAGS=
+    - cmake .. -DCMAKE_GENERATOR=Ninja         -DCMAKE_PREFIX_PATH=$PREFIX         -DCMAKE_INSTALL_PREFIX=$PREFIX         -DBUILD_TESTING=OFF         &&
+      ninja install
+    number: 1
+  requirements:
+    host:
+    - ros-jazzy-ament_cmake_core-devel
+    - ros-jazzy-ament_cmake_python-devel
+    - ros-jazzy-ament_package
+    - catkin_pkg
+  tests:
+  - package_contents:
+      files:
+      - share/ament_cmake_test/package.xml
+- package:
+    name: ros-jazzy-ament_cmake_test-devel
+  build:
+    noarch: generic
+  requirements:
+    run:
+    - ros-jazzy-ament_cmake_test
+    - ros-jazzy-ament_cmake_core-devel
 about:
   homepage: https://www.ros.org/
   license: BSD-3-Clause

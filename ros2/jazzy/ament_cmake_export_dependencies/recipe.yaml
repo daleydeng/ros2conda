@@ -2,34 +2,41 @@ context:
   distro: jazzy
   pkg: ament_cmake_export_dependencies
   group: ament_cmake
-package:
-  name: ros-jazzy-ament_cmake_export_dependencies
+recipe:
   version: 2.5.0
-source:
-  git: https://github.com/ros2-gbp/ament_cmake-release
-  rev: release/jazzy/ament_cmake_export_dependencies/2.5.0-2
-build:
-  script:
-  - '[ -f $RECIPE_DIR/package.xml ] && cp -f $RECIPE_DIR/package.xml .'
-  - mkdir build && cd build
-  - export CFLAGS=
-  - export CXXFLAGS=
-  - cmake .. -DCMAKE_GENERATOR=Ninja                 -DCMAKE_PREFIX_PATH=$PREFIX                 -DCMAKE_INSTALL_PREFIX=$PREFIX                 -DBUILD_TESTING=OFF                 &&
-    ninja install
-  number: 1
-requirements:
+outputs:
+- package:
+    name: ros-jazzy-ament_cmake_export_dependencies
+  source:
+    git: https://github.com/ros2-gbp/ament_cmake-release
+    rev: release/jazzy/ament_cmake_export_dependencies/2.5.0-2
   build:
-  - cmake
-  - ninja
-  host:
-  - ros-jazzy-ament_cmake_core
-  - ros-jazzy-ament_package
-  - catkin_pkg
-  - pip
-tests:
-- package_contents:
-    files:
-    - share/ament_cmake_export_dependencies/package.xml
+    script:
+    - '[ -f $RECIPE_DIR/package.xml ] && cp -f $RECIPE_DIR/package.xml .'
+    - mkdir build && cd build
+    - export CFLAGS=
+    - export CXXFLAGS=
+    - cmake .. -DCMAKE_GENERATOR=Ninja         -DCMAKE_PREFIX_PATH=$PREFIX         -DCMAKE_INSTALL_PREFIX=$PREFIX         -DBUILD_TESTING=OFF         &&
+      ninja install
+    number: 1
+  requirements:
+    host:
+    - ros-jazzy-ament_cmake_core-devel
+    - ros-jazzy-ament_package
+    - catkin_pkg
+  tests:
+  - package_contents:
+      files:
+      - share/ament_cmake_export_dependencies/package.xml
+- package:
+    name: ros-jazzy-ament_cmake_export_dependencies-devel
+  build:
+    noarch: generic
+  requirements:
+    run:
+    - ros-jazzy-ament_cmake_export_dependencies
+    - ros-jazzy-ament_cmake_core-devel
+    - ros-jazzy-ament_cmake_libraries-devel
 about:
   homepage: https://www.ros.org/
   license: BSD-3-Clause

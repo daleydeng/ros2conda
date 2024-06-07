@@ -12,9 +12,9 @@
   <author>Dirk Thomas</author>
   <author email="michel@ekumenlabs.com">Michel Hidalgo</author>
 
-  <build_depend>ament_cmake_core</build_depend>
-  <build_export_depend>ament_cmake_core</build_export_depend>
-  <build_export_depend>ament_cmake_export_libraries</build_export_depend>
+  <build_depend>ament_cmake_core-devel</build_depend>
+  <build_export_depend>ament_cmake_core-devel</build_export_depend>
+  <build_export_depend>ament_cmake_export_libraries-devel</build_export_depend>
 
   <export>
     <build_type>ament_cmake</build_type>
