@@ -1,4 +1,1 @@
-buildtool: []
-build:
-- ament_cmake_core
-- python3
+build: []

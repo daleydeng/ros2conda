@@ -2,60 +2,51 @@ context:
   distro: jazzy
   pkg: rosidl_runtime_c
   group: rosidl
-package:
-  name: ros-jazzy-rosidl_runtime_c
+recipe:
   version: 4.6.0
-source:
-  git: https://github.com/ros2-gbp/rosidl-release
-  rev: release/jazzy/rosidl_runtime_c/4.6.0-2
-build:
-  script: build.sh
-  number: 1
-requirements:
+outputs:
+- package:
+    name: ros-jazzy-rosidl_runtime_c
+  source:
+    git: https://github.com/ros2-gbp/rosidl-release
+    rev: release/jazzy/rosidl_runtime_c/4.6.0-2
+    patches:
+    - patches/remove_ament_cmake_ros.patch
   build:
-  - cmake
-  - ninja
-  - ${{ compiler("c") }}
-  host:
-  - ros-jazzy-ament_cmake_ros
-  - ros-jazzy-rosidl_typesupport_interface
-  - ros-jazzy-rcutils
-  - ros-jazzy-ament_cmake
-  - ros-jazzy-ament_cmake_gmock
-  - ros-jazzy-ament_cmake_gtest
-  - ros-jazzy-ament_cmake_pytest
-  - ros-jazzy-ament_cmake_core
-  - ros-jazzy-ament_cmake_export_dependencies
-  - ros-jazzy-ament_cmake_export_definitions
-  - ros-jazzy-ament_cmake_export_include_directories
-  - ros-jazzy-ament_cmake_export_interfaces
-  - ros-jazzy-ament_cmake_export_libraries
-  - ros-jazzy-ament_cmake_export_link_flags
-  - ros-jazzy-ament_cmake_export_targets
-  - ros-jazzy-ament_cmake_gen_version_h
-  - ros-jazzy-ament_cmake_libraries
-  - ros-jazzy-ament_cmake_python
-  - ros-jazzy-ament_cmake_target_dependencies
-  - ros-jazzy-ament_cmake_test
-  - ros-jazzy-ament_cmake_version
-  - ros-jazzy-gmock_vendor
-  - gmock
-  - gtest
-  - ros-jazzy-gtest_vendor
-  - pytest
-  - ros-jazzy-ament_package
-  - catkin_pkg
-  - ros-jazzy-ament_cmake_include_directories
-  - pip
-  run:
-  - ros-jazzy-rcutils
-  ignore_run_exports:
-    from_package:
-    - gtest
-tests:
-- package_contents:
-    files:
-    - share/rosidl_runtime_c/package.xml
+    number: 1
+    script:
+    - '[ -f $RECIPE_DIR/package.xml ] && cp -f $RECIPE_DIR/package.xml .'
+    - mkdir build && cd build
+    - export CFLAGS=
+    - export CXXFLAGS=
+    - '
+
+      cmake .. -DCMAKE_GENERATOR=Ninja     -DCMAKE_PREFIX_PATH=$PREFIX     -DCMAKE_INSTALL_PREFIX=$PREFIX     -DBUILD_TESTING=OFF     -DBUILD_SHARED_LIBS=ON     -DCMAKE_C_FLAGS="-Dstatic_assert=_Static_assert
+      -DROS_PACKAGE_NAME=$PKG_NAME"     && ninja install
+
+      '
+  requirements:
+    build:
+    - ${{ compiler("c") }}
+    host:
+    - ros-jazzy-ament_cmake-devel
+    - ros-jazzy-rosidl_typesupport_interface
+    - ros-jazzy-rcutils
+    run:
+    - ros-jazzy-rcutils
+  tests:
+  - package_contents:
+      files:
+      - share/rosidl_runtime_c/package.xml
+- package:
+    name: ros-jazzy-rosidl_runtime_c-devel
+  build:
+    noarch: generic
+  requirements:
+    run:
+    - ros-jazzy-rosidl_runtime_c
+    - ros-jazzy-rosidl_typesupport_interface
+    - ros-jazzy-rcutils
 about:
   homepage: https://www.ros.org/
   license: BSD-3-Clause

@@ -1,5 +1,3 @@
-buildtool:
-- rcutils
 build:
-- ament_cmake
 - rosidl_typesupport_interface
+- rcutils

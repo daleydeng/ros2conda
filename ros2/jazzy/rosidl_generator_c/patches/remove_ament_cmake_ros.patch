@@ -1,0 +1,15 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 15e72d29e..4d52461ed 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -11,8 +11,8 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID MATCHES "Clang")
+   add_compile_options(-Wall -Wextra -Wpedantic)
+ endif()
+ 
+-find_package(ament_cmake_python REQUIRED)
+-find_package(ament_cmake_ros REQUIRED)
++find_package(ament_cmake REQUIRED)
++# find_package(ament_cmake_ros REQUIRED)
+ 
+ ament_export_dependencies(rosidl_typesupport_interface)
+ ament_index_register_resource("rosidl_generator_packages")

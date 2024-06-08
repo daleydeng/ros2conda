@@ -15,6 +15,37 @@ import click
 
 OmegaConf.register_new_resolver("compiler", lambda x: r'\${{ compiler("%s") }}' % x)
 
+BUILD_SCRIPTS = {
+    'default': [
+        "[ -f $RECIPE_DIR/package.xml ] && cp -f $RECIPE_DIR/package.xml .",
+        "mkdir build && cd build",
+        # conda default CFLAGS, CXXFLAGS is bad, so clear it ,using cmake to auto find it instead
+        "export CFLAGS=",
+        "export CXXFLAGS=",
+        "cmake .. -DCMAKE_GENERATOR=Ninja \
+            -DCMAKE_PREFIX_PATH=$PREFIX \
+            -DCMAKE_INSTALL_PREFIX=$PREFIX \
+            -DBUILD_TESTING=OFF \
+            && ninja install"
+    ],
+
+    'build_ros_pkg': [
+        "[ -f $RECIPE_DIR/package.xml ] && cp -f $RECIPE_DIR/package.xml .",
+        "mkdir build && cd build",
+        "export CFLAGS=",
+        "export CXXFLAGS=",
+        """
+cmake .. -DCMAKE_GENERATOR=Ninja \
+    -DCMAKE_PREFIX_PATH=$PREFIX \
+    -DCMAKE_INSTALL_PREFIX=$PREFIX \
+    -DBUILD_TESTING=OFF \
+    -DBUILD_SHARED_LIBS=ON \
+    -DCMAKE_C_FLAGS="-Dstatic_assert=_Static_assert -DROS_PACKAGE_NAME=$PKG_NAME" \
+    && ninja install
+"""
+    ]
+}
+
 RECIPE_ABOUT = {
     "homepage": "https://www.ros.org/",
     "license": "BSD-3-Clause",
@@ -57,18 +88,6 @@ RECIPE_TPL_PYTHON = {
     "about": deepcopy(RECIPE_ABOUT)
 }
 
-BUILD_SCRIPT_CMAKE = [
-    "[ -f $RECIPE_DIR/package.xml ] && cp -f $RECIPE_DIR/package.xml .",
-    "mkdir build && cd build",
-    "export CFLAGS=",
-    "export CXXFLAGS=",
-    "cmake .. -DCMAKE_GENERATOR=Ninja \
-        -DCMAKE_PREFIX_PATH=$PREFIX \
-        -DCMAKE_INSTALL_PREFIX=$PREFIX \
-        -DBUILD_TESTING=OFF \
-        && ninja install"
-]
-
 RECIPE_TPL_CMAKE = {
     "context": {
         "distro": "???",
@@ -80,10 +99,7 @@ RECIPE_TPL_CMAKE = {
         "version": '???',
     },
     "source": {},
-    "build": {
-        # conda default CFLAGS, CXXFLAGS is bad, so clear it ,using cmake to auto find it instead
-        "script":  BUILD_SCRIPT_CMAKE,
-    },
+    "build": {},
 
     "requirements": {
         "build": ["cmake", "ninja"],
@@ -117,8 +133,7 @@ RECIPE_TPL_CMAKE_META = {
             },
             "source": {},
             "build": {
-                # conda default CFLAGS, CXXFLAGS is bad, so clear it ,using cmake to auto find it instead
-                "script": BUILD_SCRIPT_CMAKE,
+
             },
             "requirements": {},
             "tests": [{
@@ -263,6 +278,7 @@ def main(distro, repo_type, pkg_mode, build_num, dry_run, src):
         'source': {},
         'build': {
             "number": build_num,
+            'script': 'script:default',
         },
         'requirements': {},
     })
@@ -270,6 +286,10 @@ def main(distro, repo_type, pkg_mode, build_num, dry_run, src):
     cfg_f = osp.join(src, 'config.toml')
     if osp.exists(cfg_f):
         cfg = OmegaConf.merge(cfg, toml.load(cfg_f))
+
+    if cfg.build.script.startswith('script:'):
+        key = cfg.build.script.split(':')[-1]
+        cfg.build.script = BUILD_SCRIPTS[key]
 
     if cfg.repo_type == 'gbp':
         if not cfg.source.get('git_url', ''):
@@ -348,6 +368,11 @@ def main(distro, repo_type, pkg_mode, build_num, dry_run, src):
         'description': ros2_pkg.description,
     })
 
+    patches = []
+    patch_dir = osp.join(src, 'patches')
+    if osp.exists(patch_dir):
+        patches += [osp.join("patches", i) for i in sorted(os.listdir(patch_dir))]
+
     use_meta_f = osp.join(src, 'use_meta')
     if use_meta:
         recipe.recipe.version = ros2_pkg.version
@@ -355,7 +380,11 @@ def main(distro, repo_type, pkg_mode, build_num, dry_run, src):
         subpkg_recipe.source.update({
             'git': git_url,
             'rev': git_rev,
+
         })
+        if patches:
+            subpkg_recipe.source.patches = patches
+
         noarch_type = subpkg_recipe.build.get('noarch', '')
 
         req = subpkg_recipe.requirements
@@ -373,7 +402,10 @@ def main(distro, repo_type, pkg_mode, build_num, dry_run, src):
         recipe.source.update({
             'git': git_url,
             'rev': git_rev,
+
         })
+        if patches:
+            recipe.source.patches = patches
         noarch_type = recipe.build.get('noarch', '')
 
         req = recipe.requirements

@@ -1,4 +1,3 @@
 group = "rosidl"
 buildtool_depends = ["${compiler:c}"]
-build.script = "build.sh"
-requirements.ignore_run_exports.from_package = ["gtest"]
+build.script = "script:build_ros_pkg"

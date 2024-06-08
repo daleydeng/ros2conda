@@ -1,0 +1,15 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 4f6ae5f..2c0b9a8 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -13,8 +13,8 @@ endif()
+ 
+ include(CheckLibraryExists)
+ 
+-find_package(ament_cmake_python REQUIRED)
+-find_package(ament_cmake_ros REQUIRED)
++find_package(ament_cmake REQUIRED)
++# find_package(ament_cmake_ros REQUIRED)
+ 
+ # By default, without the settings below, find_package(Python3) will attempt
+ # to find the newest python version it can, and additionally will find the
