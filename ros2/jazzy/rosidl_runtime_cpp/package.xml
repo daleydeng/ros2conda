@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>rosidl_generator_cpp</name>
+  <name>rosidl_runtime_cpp</name>
   <version>4.6.1</version>
-  <description>Generate the ROS interfaces in C++.</description>
+  <description>Provides definitions and templated functions for getting and working with rosidl typesupport types in C++.</description>
 
   <maintainer email="aditya.pande@openrobotics.org">Aditya Pande</maintainer>
   <maintainer email="brandon@openrobotics.org">Brandon Ong</maintainer>
@@ -18,21 +18,15 @@
 
   <build_depend>ament_cmake-devel</build_depend>
 
-  <build_export_depend>rosidl_pycommon</build_export_depend>
-  <build_export_depend>rosidl_cmake</build_export_depend>
-  <!-- This is needed for the rosidl_message_type_support_t struct and visibility macros -->
-  <build_export_depend>rosidl_generator_c-devel</build_export_depend>
-  <build_export_depend>rosidl_runtime_cpp-devel</build_export_depend>
+  <build_depend>rosidl_runtime_c-devel</build_depend>
+  <build_export_depend>rosidl_runtime_c-devel</build_export_depend>
 
-  <exec_depend>ament_index_python</exec_depend>
-  <exec_depend>rosidl_cli</exec_depend>
-  <exec_depend>rosidl_generator_type_description</exec_depend>
-  <exec_depend>rosidl_parser</exec_depend>
-
+  <test_depend>ament_cmake_gtest</test_depend>
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
+  <test_depend>performance_test_fixture</test_depend>
 
-  <member_of_group>rosidl_generator_packages</member_of_group>
+  <member_of_group>rosidl_runtime_packages</member_of_group>
 
   <export>
     <build_type>ament_cmake</build_type>

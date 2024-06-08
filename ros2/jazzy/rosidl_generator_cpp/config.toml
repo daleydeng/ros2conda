@@ -1,1 +1,2 @@
 group = "rosidl"
+build.noarch = "python"

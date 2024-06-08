@@ -1,0 +1,3 @@
+group = "rosidl"
+buildtool_depends = ["${compiler:cxx}"]
+build.script = "script:build_ros_pkg"
